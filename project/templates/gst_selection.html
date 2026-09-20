@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}GST Registration - Select Business Type{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center mb-5">
+            <h1 class="text-navy mb-3"><i class="fas fa-file-invoice me-2"></i>GST Registration</h1>
+            <p class="lead text-muted">Select your business type to proceed with GST registration</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="business-type-grid">
+                <!-- Proprietorship -->
+                <div class="business-type-card" onclick="selectBusinessType('proprietorship', '/gst/proprietorship')">
+                    <i class="fas fa-user-tie"></i>
+                    <h4>Proprietorship</h4>
+                    <p>Self-employed individual business</p>
+                </div>
+
+                <!-- Partnership -->
+                <div class="business-type-card" onclick="selectBusinessType('partnership', '/gst/partnership')">
+                    <i class="fas fa-handshake"></i>
+                    <h4>Partnership Firm</h4>
+                    <p>Business with multiple partners</p>
+                </div>
+
+                <!-- LLP -->
+                <div class="business-type-card" onclick="selectBusinessType('llp', '/gst/llp')">
+                    <i class="fas fa-building"></i>
+                    <h4>LLP</h4>
+                    <p>Limited Liability Partnership</p>
+                </div>
+
+                <!-- Private Limited -->
+                <div class="business-type-card" onclick="selectBusinessType('private_limited', '/gst/private-limited')">
+                    <i class="fas fa-corporation"></i>
+                    <h4>Private Limited</h4>
+                    <p>Private Limited Company</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectBusinessType(type, redirectUrl) {
+        // You can add any validation or logging here
+        window.location.href = redirectUrl;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Application Details - Admin{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg admin-navbar sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin/dashboard">
+            <i class="fas fa-lock me-2"></i>Admin Dashboard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="ms-auto">
+                <a href="/admin/applications" class="nav-link">Back to Applications</a>
+                <a href="/admin/logout" class="nav-link">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="text-navy mb-2">{{ application.application_id }}</h1>
+            <p class="text-muted mb-4">Submitted: {{ application.created_at.strftime('%d-%m-%Y %H:%M') }}</p>
+
+            <!-- Client Information -->
+            <div class="card shadow-card mb-4">
+                <div class="card-header bg-navy text-white">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Client Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> {{ application.full_name }}</p>
+                            <p><strong>Mobile:</strong> {{ application.mobile_number }}</p>
+                            <p><strong>Email:</strong> {{ application.email or 'Not provided' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Aadhaar:</strong> {{ application.aadhaar_number }}</p>
+                            <p><strong>PAN:</strong> {{ application.pan_number }}</p>
+                            <p><strong>Service:</strong> 
+                                {% if application.service_type == 'udyam' %}
+                                    <span class="badge bg-navy">Udyam Registration</span>
+                                {% else %}
+                                    <span class="badge bg-gold text-dark">GST Registration</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Information -->
+            {% if application.business_name or application.firm_name or application.llp_name or application.company_name %}
+            <div class="card shadow-card mb-4">
+                <div class="card-header bg-navy text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Business Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% if application.business_name %}
+                        <div class="col-md-6">
+                            <p><strong>Business Name:</strong> {{ application.business_name }}</p>
+                        </div>
+                        {% endif %}
+                        {% if application.firm_name %}
+                        <div class="col-md-6">
+                            <p><strong>Firm Name:</strong> {{ application.firm_name }}</p>
+                        </div>
+                        {% endif %}
+                        {% if application.llp_name %}
+                        <div class="col-md-6">
+                            <p><strong>LLP Name:</strong> {{ application.llp_name }}</p>
+                        </div>
+                        {% endif %}
+                        {% if application.company_name %}
+                        <div class="col-md-6">
+                            <p><strong>Company Name:</strong> {{ application.company_name }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <p><strong>Business Address:</strong> {{ application.business_address }}</p>
+                    <p><strong>Nature of Business:</strong> {{ application.nature_of_business }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Bank Information -->
+            {% if application.bank_details %}
+            <div class="card shadow-card mb-4">
+                <div class="card-header bg-navy text-white">
+                    <h5 class="mb-0"><i class="fas fa-bank me-2"></i>Bank Information</h5>
+                </div>
+                <div class="card-body">
+                    {% for bank in application.bank_details %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Account Holder:</strong> {{ bank.account_holder_name }}</p>
+                            <p><strong>Account Number:</strong> {{ bank.account_number }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Bank:</strong> {{ bank.bank_name }}</p>
+                            <p><strong>IFSC:</strong> {{ bank.ifsc }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Uploaded Documents -->
+            {% if application.documents %}
+            <div class="card shadow-card mb-4">
+                <div class="card-header bg-navy text-white">
+                    <h5 class="mb-0"><i class="fas fa-file-upload me-2"></i>Uploaded Documents</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Document Type</th>
+                                    <th>File Name</th>
+                                    <th>Size</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in application.documents %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-navy">{{ doc.document_type }}</span>
+                                    </td>
+                                    <td>{{ doc.original_file_name }}</td>
+                                    <td>{{ (doc.file_size / 1024) | round(2) }} KB</td>
+                                    <td>
+                                        <a href="/api/admin/download-document/{{ doc.id }}" class="btn btn-sm btn-navy">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Status Card -->
+            <div class="card shadow-card mb-4 sticky-top" style="top: 70px;">
+                <div class="card-header bg-navy text-white">
+                    <h5 class="mb-0">Application Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <p class="text-muted">Current Status</p>
+                        <div>
+                            {% if application.status == 'pending' %}
+                                <span class="badge badge-pending p-2">Pending</span>
+                            {% elif application.status == 'documents_received' %}
+                                <span class="badge bg-info p-2">Documents Received</span>
+                            {% elif application.status == 'under_process' %}
+                                <span class="badge badge-processing p-2">Under Process</span>
+                            {% elif application.status == 'completed' %}
+                                <span class="badge badge-approved p-2">Completed</span>
+                            {% elif application.status == 'rejected' %}
+                                <span class="badge badge-rejected p-2">Rejected</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <form id="statusForm" class="mb-3">
+                        <label class="form-label">Update Status</label>
+                        <select class="form-select mb-3" id="statusSelect">
+                            <option value="pending" {% if application.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="documents_received" {% if application.status == 'documents_received' %}selected{% endif %}>Documents Received</option>
+                            <option value="under_process" {% if application.status == 'under_process' %}selected{% endif %}>Under Process</option>
+                            <option value="completed" {% if application.status == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="rejected" {% if application.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                        <button type="button" class="btn btn-navy w-100" onclick="updateStatus()">
+                            <i class="fas fa-save me-2"></i>Update Status
+                        </button>
+                    </form>
+
+                    <hr>
+
+                    <div class="text-muted small">
+                        <p><strong>Submission Date:</strong> {{ application.created_at.strftime('%d-%m-%Y %H:%M') }}</p>
+                        <p><strong>Last Updated:</strong> {{ application.updated_at.strftime('%d-%m-%Y %H:%M') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function updateStatus() {
+    const status = document.getElementById('statusSelect').value;
+    const applicationId = '{{ application.application_id }}';
+
+    try {
+        const response = await fetch('/api/admin/update-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                application_id: applicationId,
+                status: status
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Status updated successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error updating status: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - KGS & Company{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg admin-navbar sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin/dashboard">
+            <i class="fas fa-lock me-2"></i>Admin Dashboard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="ms-auto">
+                <a href="/admin/applications" class="nav-link">Applications</a>
+                <a href="/admin/logout" class="nav-link">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <h1 class="text-navy mb-5">Dashboard</h1>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card">
+                <i class="fas fa-file-alt fa-2x text-navy mb-3"></i>
+                <div class="number">{{ stats.total }}</div>
+                <div class="label">Total Applications</div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card">
+                <i class="fas fa-building fa-2x text-navy mb-3"></i>
+                <div class="number">{{ stats.udyam }}</div>
+                <div class="label">Udyam Registrations</div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card">
+                <i class="fas fa-file-invoice fa-2x text-navy mb-3"></i>
+                <div class="number">{{ stats.gst }}</div>
+                <div class="label">GST Registrations</div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card gold">
+                <i class="fas fa-check-circle fa-2x text-gold mb-3"></i>
+                <div class="number">{{ stats.completed }}</div>
+                <div class="label">Completed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Summary -->
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="dashboard-card">
+                <i class="fas fa-clock fa-2x text-warning mb-3"></i>
+                <div class="number">{{ stats.pending }}</div>
+                <div class="label">Pending Review</div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="dashboard-card">
+                <i class="fas fa-hourglass-half fa-2x text-info mb-3"></i>
+                <div class="number">{{ stats.under_process }}</div>
+                <div class="label">Under Process</div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="dashboard-card">
+                <a href="/admin/applications" class="btn btn-navy w-100" style="margin-top: 30px;">
+                    <i class="fas fa-list me-2"></i>View All Applications
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

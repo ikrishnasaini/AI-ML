@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}GST Registration - Partnership Firm{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-navy mb-1"><i class="fas fa-file-invoice me-2"></i>GST Registration</h1>
+            <p class="text-muted mb-5">Partnership Firm Form</p>
+
+            <form id="gstPartnershipForm" enctype="multipart/form-data">
+                <input type="hidden" name="businessType" value="partnership">
+                <input type="hidden" name="partnerCount" value="1">
+
+                <!-- Firm Details -->
+                <div class="form-section">
+                    <h3><i class="fas fa-briefcase me-2"></i>Firm Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Firm Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="firmName" required 
+                               placeholder="Enter firm name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Firm PAN <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="firmPan" required 
+                               placeholder="PAN (e.g., ABCDE1234F)" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Business Address <span class="required">*</span></label>
+                        <textarea class="form-control" name="businessAddress" rows="3" required 
+                                  placeholder="Enter complete business address"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nature of Business <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="natureOfBusiness" required 
+                               placeholder="E.g., Manufacturing, Trading, Services">
+                    </div>
+                </div>
+
+                <!-- Partner Details -->
+                <div class="form-section">
+                    <h3><i class="fas fa-users me-2"></i>Partner Details</h3>
+                    
+                    <div id="partnersContainer">
+                        <div class="dynamic-row">
+                            <h5 class="mb-3">Partner 1</h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Partner Name <span class="required">*</span></label>
+                                <input type="text" class="form-control" name="partner_0_name" required 
+                                       placeholder="Enter partner name">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Mobile Number <span class="required">*</span></label>
+                                <input type="tel" class="form-control" name="partner_0_mobile" required 
+                                       placeholder="10-digit mobile number" pattern="[0-9]{10}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Aadhaar Number <span class="required">*</span></label>
+                                <input type="text" class="form-control" name="partner_0_aadhaar" required 
+                                       placeholder="12-digit Aadhaar number" pattern="[0-9]{12}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">PAN Number <span class="required">*</span></label>
+                                <input type="text" class="form-control" name="partner_0_pan" required 
+                                       placeholder="PAN (e.g., ABCDE1234F)" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-navy add-row-btn" onclick="addPartner()">
+                        <i class="fas fa-plus me-2"></i>Add More Partner
+                    </button>
+                </div>
+
+                <!-- Bank Details -->
+                <div class="form-section">
+                    <h3><i class="fas fa-bank me-2"></i>Bank Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Account Holder Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="accountHolderName" required 
+                               placeholder="Name as per bank account">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Bank Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="bankName" required 
+                               placeholder="E.g., HDFC Bank, ICICI Bank">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Account Number <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="accountNumber" required 
+                               placeholder="Bank account number">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">IFSC Code <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="ifsc" required 
+                               placeholder="11-character IFSC code" pattern="[A-Z0-9]{11}">
+                    </div>
+                </div>
+
+                <!-- Document Upload -->
+                <div class="form-section">
+                    <h3><i class="fas fa-file-upload me-2"></i>Upload Required Documents</h3>
+                    <p class="text-muted mb-4">All documents are required. Supported formats: JPG, PNG, PDF (Max 16MB)</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Partnership Deed <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="partnership_deed">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Partnership Deed here</p>
+                            <small>PDF | Max 16MB</small>
+                            <input type="file" class="file-input" name="partnership_deed" accept=".pdf">
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="partnership_deed">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Firm PAN <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="firm_pan">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Firm PAN here</p>
+                            <small>JPG, PNG, or PDF | Max 16MB</small>
+                            <input type="file" class="file-input" name="firm_pan" accept=".jpg,.jpeg,.png,.pdf">
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="firm_pan">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Partner Aadhaar Cards <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="partner_aadhaar">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Partner Aadhaar Cards here</p>
+                            <small>JPG, PNG, or PDF | Max 16MB</small>
+                            <input type="file" class="file-input" name="partner_aadhaar" accept=".jpg,.jpeg,.png,.pdf" multiple>
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="partner_aadhaar">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Partner PAN Cards <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="partner_pan">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Partner PAN Cards here</p>
+                            <small>JPG, PNG, or PDF | Max 16MB</small>
+                            <input type="file" class="file-input" name="partner_pan" accept=".jpg,.jpeg,.png,.pdf" multiple>
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="partner_pan">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Partner Photos <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="partner_photo">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Partner Photos here</p>
+                            <small>JPG or PNG | Max 16MB</small>
+                            <input type="file" class="file-input" name="partner_photo" accept=".jpg,.jpeg,.png" multiple>
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="partner_photo">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Partner Signatures <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="partner_signature">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Partner Signatures here</p>
+                            <small>JPG or PNG | Max 16MB</small>
+                            <input type="file" class="file-input" name="partner_signature" accept=".jpg,.jpeg,.png" multiple>
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="partner_signature">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cancelled Cheque <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="cheque">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Cancelled Cheque here</p>
+                            <small>JPG, PNG, or PDF | Max 16MB</small>
+                            <input type="file" class="file-input" name="cheque" accept=".jpg,.jpeg,.png,.pdf">
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="cheque">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Business Address Proof <span class="required">*</span></label>
+                        <div class="upload-area" data-doc-type="address_proof">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag Address Proof here</p>
+                            <small>JPG, PNG, or PDF | Max 16MB</small>
+                            <input type="file" class="file-input" name="address_proof" accept=".jpg,.jpeg,.png,.pdf">
+                        </div>
+                        <div class="uploaded-file d-none" data-doc-type="address_proof">
+                            <div><i class="fas fa-file"></i><span class="file-name"></span></div>
+                            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mt-5">
+                    <a href="/gst" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </a>
+                    <button type="submit" class="btn btn-gold ms-auto">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/form-handler.js') }}"></script>
+<script src="{{ url_for('static', filename='js/file-upload.js') }}"></script>
+<script>
+    let partnerCount = 1;
+
+    function addPartner() {
+        const container = document.getElementById('partnersContainer');
+        const newRow = document.createElement('div');
+        newRow.className = 'dynamic-row';
+        newRow.innerHTML = `
+            <h5 class="mb-3">Partner ${partnerCount + 1}
+                <button type="button" class="remove-row" onclick="this.parentElement.parentElement.remove(); updatePartnerCount();">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </h5>
+            
+            <div class="form-group">
+                <label class="form-label">Partner Name <span class="required">*</span></label>
+                <input type="text" class="form-control" name="partner_${partnerCount}_name" required 
+                       placeholder="Enter partner name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mobile Number <span class="required">*</span></label>
+                <input type="tel" class="form-control" name="partner_${partnerCount}_mobile" required 
+                       placeholder="10-digit mobile number" pattern="[0-9]{10}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Aadhaar Number <span class="required">*</span></label>
+                <input type="text" class="form-control" name="partner_${partnerCount}_aadhaar" required 
+                       placeholder="12-digit Aadhaar number" pattern="[0-9]{12}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">PAN Number <span class="required">*</span></label>
+                <input type="text" class="form-control" name="partner_${partnerCount}_pan" required 
+                       placeholder="PAN (e.g., ABCDE1234F)" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+            </div>
+        `;
+        container.appendChild(newRow);
+        partnerCount++;
+        updatePartnerCount();
+    }
+
+    function updatePartnerCount() {
+        document.querySelector('input[name="partnerCount"]').value = 
+            document.querySelectorAll('#partnersContainer .dynamic-row').length;
+    }
+
+    const gstForm = new FormHandler('gstPartnershipForm', '/api/submit-gst');
+</script>
+{% endblock %}
